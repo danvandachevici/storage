@@ -1,13 +1,16 @@
 import {UserType} from "./User.type";
+import {ObjectEnumType} from "./ObjectEnum.type";
 
 export class StorageObjectMetadataType {
     name: string;
     created: Date;
     modified: Date;
     owner: UserType;
-    constructor(name: string, owner: UserType, created?: Date, modified?: Date) {
+    type: ObjectEnumType;
+    constructor(name: string, type: ObjectEnumType, created?: Date, modified?: Date, owner?: UserType) {
         this.name = name;
-        this.owner = owner;
+        this.type = type;
+        this.owner = owner || undefined;
         this.created = created || new Date();
         this.modified = modified || new Date();
     }

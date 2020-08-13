@@ -4,7 +4,7 @@ import {StorageObjectMetadataType} from "../types/StorageObjectMetadata.type";
 import {StorageEngineConfigType} from "../types/StorageEngineConfig.type";
 
 export interface StorageEngineInterface {
-    putObject(obj: StorageObjectType): Promise<any>;
+    putObject(data: string, name: string, path: PathType): Promise<any>;
     getObject(path: PathType): Promise<StorageObjectType>;
     listObjects(path: PathType): Promise<StorageObjectMetadataType[]>;
     deleteObject(path: PathType): Promise<any>;
