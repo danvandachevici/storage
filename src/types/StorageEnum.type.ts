@@ -2,7 +2,7 @@ export enum StorageEnumType {
     localStorage,
     s3,
     dropbox,
-    backdrop,
+    backblaze,
     googleDrive,
     owncloud,
 }

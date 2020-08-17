@@ -20,6 +20,11 @@ export class StorageEngineConfigType {
 
     type: StorageEnumType;
 
+    credentials: {
+        accessKeyId: string,
+        secretAccessKey: string
+    };
+
     getLimitInKb() {
         let factor = 1;
         if (this.limitUsage.indexOf('mb') !== -1) {

@@ -5,6 +5,7 @@ import {StorageObjectMetadataType} from "../types/StorageObjectMetadata.type";
 import * as fsSync from 'fs';
 import {StorageEngineConfigType} from "../types/StorageEngineConfig.type";
 import {ObjectEnumType} from "../types/ObjectEnum.type";
+import {Stats} from "fs";
 
 const fs = fsSync.promises;
 
@@ -14,12 +15,16 @@ export class LocalStorageService implements StorageEngineInterface {
     limitKb: number;
 
     constructor(config: StorageEngineConfigType) {
-        this.baseDir = config.baseDir;
+        this.baseDir = config.baseDir || '/tmp';
         this.limitKb = config.getLimitInKb();
+
+        if (this.baseDir.endsWith('/')) {
+            this.baseDir = this.baseDir.replace(/\/$/, '');
+        }
     }
 
     deleteObject(path: PathType): Promise<any> {
-        return fs.rmdir(path, {recursive: true});
+        return fs.unlink(this.baseDir + '/' + path);
     }
 
     getObject(path: PathType): Promise<StorageObjectType> {
@@ -50,15 +55,41 @@ export class LocalStorageService implements StorageEngineInterface {
     }
 
     deleteRecursive(path: PathType): Promise<any> {
-        return Promise.resolve(undefined);
+        return fs.rmdir(this.baseDir + '/' + path, {recursive: true});
+    }
+
+    ensurePath(path): Promise<any> {
+        return fs.stat(path).then((stat: Stats) => {
+            if(stat) {
+                return '';
+            } else {
+                return fs.mkdir(path, {recursive: true}).catch((e) => {
+                    console.log('Exception on mkdir:', e);
+                });
+            }
+        }).catch((ex) => {
+            console.log(`exception calling stat ${path}`);
+            return fs.mkdir(path, {recursive: true});
+        });
     }
 
     putObject(data: string, name: string, path: PathType): Promise<any> {
-        const newObj = new StorageObjectType(
-            data,
-            new StorageObjectMetadataType(name, ObjectEnumType.File)
-        )
-        return fs.writeFile(this.baseDir + '/' + path + '/' + name, data);
+        // check size of data:
+        // ensure folder exists
+        let computedPathDir = (this.baseDir + '/' + path).replace(/\/\/+/g, '/');;
+        let computedPathFile = (computedPathDir + '/' + name).replace(/\/\/+/g, '/');;
+
+        return this.ensurePath(computedPathDir).then(() => {
+            return fs.writeFile(computedPathFile, data).then(() => {return;});
+        }).catch((e) => {
+            console.log('Exception:', e);
+        });
     }
 
+    getAvailableSpace(): Promise<number> {
+        if (this.limitKb) {
+            return Promise.resolve(this.limitKb);
+        }
+        return Promise.resolve(0);
+    }
 }
