@@ -20,7 +20,7 @@ export class StorageEngineConfigType {
 
     type: StorageEnumType;
 
-    credentials: {
+    credentials?: {
         accessKeyId: string,
         secretAccessKey: string
     };
