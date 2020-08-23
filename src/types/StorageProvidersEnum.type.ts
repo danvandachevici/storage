@@ -1,8 +1,7 @@
-export enum StorageEnumType {
+export enum StorageProvidersEnumType {
     localStorage,
     s3,
-    dropbox,
     backblaze,
     googleDrive,
-    owncloud,
+    oneDrive,
 }

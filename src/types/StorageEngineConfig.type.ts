@@ -1,4 +1,4 @@
-import {StorageEnumType} from "./StorageEnum.type";
+import {StorageProvidersEnumType} from "./StorageProvidersEnum.type";
 
 export class StorageEngineConfigType {
     /**
@@ -18,7 +18,7 @@ export class StorageEngineConfigType {
      */
     limitUsage: string = '';
 
-    type: StorageEnumType;
+    type: StorageProvidersEnumType;
 
     credentials?: {
         accessKeyId: string,

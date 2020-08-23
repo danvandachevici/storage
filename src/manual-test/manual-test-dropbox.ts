@@ -1,13 +1,13 @@
 import {StorageEngineConfigType} from "../types/StorageEngineConfig.type";
 import {StorageProvidersEnumType} from "../types/StorageProvidersEnum.type";
 import {StorageEngineInterface} from "../interfaces/StorageEngine.interface";
-import {S3StorageService} from "../services/S3Storage.service";
+import {DropboxStorageService} from "../services/DropboxStorage.service";
 
 const config = new StorageEngineConfigType();
 config.limitUsage = '100mb';
 config.baseDir = 'testbucket.vandachevici.ro';
 config.type = StorageProvidersEnumType.s3;
-const storage: StorageEngineInterface = new S3StorageService(config);
+const storage: StorageEngineInterface = new DropboxStorageService(config);
 
 storage.putObject('This is some data', 'file1', '/').then(() => {
     console.log('Object saved');
